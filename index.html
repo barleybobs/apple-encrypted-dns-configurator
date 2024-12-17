@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en" class="overflow-y-scroll">
+    <head>
+        <title>DNS Profile Generator</title>
+        <meta charset="UTF-8" />
+        <meta name="description" content="Generate DNS profiles for use with MacOS and iOS" />
+        <meta name="keywords" content="DNS, DoH, DoT, Encryption, Security, HTTPS, TLS" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="stylesheet" href="main.css" />
+    </head>
+    <body>
+        <div class="relative flex min-h-screen flex-col justify-center overflow-hidden bg-gray-50 sm:py-6 sm:py-12">
+            <div
+                class="relative bg-white px-6 pb-8 pt-10 shadow-xl ring-1 ring-gray-900/5 sm:mx-auto sm:max-w-lg sm:rounded-lg sm:px-10 max-sm:min-h-screen"
+            >
+                <div class="space-y-6">
+                    <div class="border-b border-gray-900/10 pb-6">
+                        <h2 class="text-base/7 font-semibold text-gray-900">DNS Profile Generator</h2>
+                        <p class="mt-1 text-sm/6 text-gray-600">
+                            This will generate a DNS profile for use with MacOS or iOS. This should be opened in Safari.
+                        </p>
+                        <p class="mt-1 text-xs text-gray-600">
+                            Made by
+                            <a class="underline decoration-dotted" href="https://github.com/barleybobs" target="_blank"
+                                >barleybobs</a
+                            >
+                        </p>
+                    </div>
+
+                    <div class="border-b border-gray-900/10 pb-6 relative text-left flex-1">
+                        <label for="premade-menu-button" class="block text-sm/6 font-medium text-gray-900"
+                            >Profile Templates</label
+                        >
+                        <p class="mt-1 text-xs/4 text-gray-600">
+                            Generate you own profiles or pick from ones for various different DNS providers.
+                        </p>
+                        <div class="mt-2">
+                            <button
+                                id="premade-menu-button"
+                                name="premade-menu-button"
+                                type="button"
+                                onclick="this.focus()"
+                                class="inline-flex w-full justify-between gap-x-1.5 rounded-md bg-white px-3 py-1.5 sm:py-2 text-sm text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600"
+                                aria-expanded="true"
+                                aria-haspopup="true"
+                            >
+                                Custom
+                                <svg
+                                    class="-mr-1 size-5 text-gray-400"
+                                    viewBox="0 0 20 20"
+                                    fill="currentColor"
+                                    aria-hidden="true"
+                                    data-slot="icon"
+                                >
+                                    <path
+                                        fill-rule="evenodd"
+                                        d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z"
+                                        clip-rule="evenodd"
+                                    />
+                                </svg>
+                            </button>
+                        </div>
+
+                        <div
+                            id="premade-menu"
+                            class="py-1 hidden max-h-80 overflow-y-auto absolute left-0 z-10 mt-2 w-full origin-top-right rounded-md bg-white shadow-lg ring-1 ring-gray-300 focus:outline-none"
+                            role="menu"
+                            aria-orientation="vertical"
+                            aria-labelledby="menu-button"
+                            tabindex="-1"
+                        ></div>
+                    </div>
+
+                    <div class="sm:col-span-3 flex-1">
+                        <label for="name" class="block text-sm/6 font-medium text-gray-900">Service Name</label>
+                        <p class="mt-1 text-xs/4 text-gray-600">
+                            The name of the DNS provider you are using (e.g. Cloudflare).
+                        </p>
+                        <div class="mt-2">
+                            <input
+                                type="text"
+                                name="name"
+                                id="name"
+                                oninput="this.value = this.value.replace(/[^a-zA-Z0-9 ]/, '')"
+                                class="block w-full rounded-md bg-white px-3 py-1.5 text-sm text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
+                            />
+                        </div>
+                        <p id="name-error" class="mt-1 text-xs/4 text-red-600"></p>
+                    </div>
+
+                    <div class="sm:col-span-3">
+                        <label for="addresses" class="block text-sm/6 font-medium text-gray-900">Addresses</label>
+                        <p class="mt-1 text-xs/4 text-gray-600">
+                            The addresses of the used DNS servers (e.g. 1.1.1.1) separated by newlines.
+                        </p>
+                        <div class="mt-2">
+                            <textarea
+                                name="addresses"
+                                id="addresses"
+                                rows="4"
+                                class="block w-full rounded-md bg-white px-3 py-1.5 text-sm text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
+                            ></textarea>
+                        </div>
+                        <p id="addresses-error" class="mt-1 text-xs/4 text-red-600"></p>
+                    </div>
+
+                    <div class="sm:col-span-3">
+                        <label for="template" class="block text-sm/6 font-medium text-gray-900">Template</label>
+                        <p class="mt-1 text-xs/4 text-gray-600">
+                            The URL for HTTPS or the domain for TLS. (e.g. https://cloudflare-dns.com/dns-query)
+                        </p>
+                        <div class="mt-2">
+                            <input
+                                type="text"
+                                name="template"
+                                id="template"
+                                class="block w-full rounded-md bg-white px-3 py-1.5 text-sm text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
+                            />
+                        </div>
+                        <p id="template-error" class="mt-1 text-xs/4 text-red-600"></p>
+                    </div>
+
+                    <fieldset class="border-b border-gray-900/10 pb-6">
+                        <legend class="text-sm/6 font-semibold text-gray-900">Type</legend>
+                        <div class="mt-6 space-y-6">
+                            <div class="flex items-center gap-x-3">
+                                <input
+                                    id="doh"
+                                    name="push-notifications"
+                                    type="radio"
+                                    checked
+                                    class="relative size-4 appearance-none rounded-full border border-gray-300 bg-white before:absolute before:inset-1 before:rounded-full before:bg-white checked:border-indigo-600 checked:bg-indigo-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:border-gray-300 disabled:bg-gray-100 disabled:before:bg-gray-400 forced-colors:appearance-auto forced-colors:before:hidden [&:not(:checked)]:before:hidden"
+                                />
+                                <label for="doh" class="block text-sm/6 font-medium text-gray-900"
+                                    >DoH (DNS over HTTPS)</label
+                                >
+                            </div>
+                            <div class="flex items-center gap-x-3">
+                                <input
+                                    id="dot"
+                                    name="push-notifications"
+                                    type="radio"
+                                    class="relative size-4 appearance-none rounded-full border border-gray-300 bg-white before:absolute before:inset-1 before:rounded-full before:bg-white checked:border-indigo-600 checked:bg-indigo-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:border-gray-300 disabled:bg-gray-100 disabled:before:bg-gray-400 forced-colors:appearance-auto forced-colors:before:hidden [&:not(:checked)]:before:hidden"
+                                />
+                                <label for="dot" class="block text-sm/6 font-medium text-gray-900"
+                                    >DoT (DNS over TLS)</label
+                                >
+                            </div>
+                        </div>
+                    </fieldset>
+
+                    <div class="mt-6 flex items-center justify-end gap-x-6">
+                        <button
+                            id="copy-settings"
+                            type="button"
+                            class="rounded-md outline outline-1 outline-gray-900/10 px-3 py-2 text-sm font-semibold shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
+                        >
+                            Copy Profile Link
+                        </button>
+
+                        <button
+                            id="download"
+                            type="submit"
+                            class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                        >
+                            Download
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script src="mobileconfig.js"></script>
+        <script>
+            ////////////////////////////////
+            //                            //
+            //         Share URLs         //
+            //                            //
+            ////////////////////////////////
+            // Load settings from URL params
+            const url_params = new URLSearchParams(window.location.search);
+            if (url_params.has("name")) {
+                document.getElementById("name").value = url_params.get("name");
+            }
+            if (url_params.has("addresses")) {
+                document.getElementById("addresses").value = url_params.get("addresses");
+            }
+            if (url_params.has("template")) {
+                document.getElementById("template").value = url_params.get("template");
+            }
+            if (url_params.has("type")) {
+                switch (url_params.get("type")) {
+                    case "doh":
+                        document.getElementById("doh").checked = true;
+                        break;
+                    case "dot":
+                        document.getElementById("dot").checked = true;
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            ////////////////////////////////
+            //                            //
+            //       Copy Settings        //
+            //                            //
+            ////////////////////////////////
+            // Hide copy link button if navigator.clipboard not supported
+            if (!navigator.clipboard && typeof navigator.clipboard.writeText !== "function") {
+                document.getElementById("copy-settings").style.display = "none";
+            }
+
+            // Copy link to current settings
+            function generate_share_link() {
+                return (
+                    window.location.origin +
+                    window.location.pathname +
+                    "?name=" +
+                    encodeURIComponent(document.getElementById("name").value.trim()) +
+                    "&addresses=" +
+                    encodeURIComponent(document.getElementById("addresses").value.trim()) +
+                    "&template=" +
+                    encodeURIComponent(document.getElementById("template").value.trim()) +
+                    "&type=" +
+                    (document.getElementById("doh").checked == true ? "doh" : "dot")
+                );
+            }
+            document.getElementById("copy-settings").addEventListener("click", () => {
+                navigator.clipboard.writeText(generate_share_link());
+            });
+
+            ////////////////////////////////
+            //                            //
+            //     Profile Templates      //
+            //                            //
+            ////////////////////////////////
+            document.getElementById("premade-menu-button").addEventListener("click", () => {
+                document.getElementById("premade-menu").classList.toggle("hidden");
+            });
+            document.addEventListener("click", (e) => {
+                if (
+                    !document.getElementById("premade-menu").contains(e.target) &&
+                    !document.getElementById("premade-menu-button").contains(e.target)
+                ) {
+                    document.getElementById("premade-menu").classList.add("hidden");
+                }
+            });
+
+            async function load_premade() {
+                resp = await fetch("./premade.json");
+                if (resp.ok) {
+                    const premade = await resp.json();
+
+                    for (let [display_name, data] of Object.entries(premade)) {
+                        const newChild = document.createElement("p");
+                        newChild.className = "block px-4 py-2 text-sm text-gray-700 cursor-pointer";
+                        newChild.setAttribute("role", "menuitem");
+                        newChild.setAttribute("tabindex", "-1");
+                        newChild.setAttribute("id", "menu-item-0");
+
+                        newChild.textContent = display_name;
+
+                        newChild.addEventListener("click", () => {
+                            document.getElementById("name").value = data.name;
+                            document.getElementById("addresses").value = data.addresses.join("\n");
+                            document.getElementById("template").value = data.template;
+                            data.type == "doh"
+                                ? (document.getElementById("doh").checked = true)
+                                : (document.getElementById("dot").checked = true);
+
+                            document.getElementById("premade-menu-button").innerText = display_name;
+                            document.getElementById("premade-menu").classList.add("hidden");
+                        });
+
+                        document.getElementById("premade-menu").appendChild(newChild);
+                    }
+                }
+            }
+            load_premade();
+
+            ////////////////////////////////
+            //                            //
+            //  Generation and Download   //
+            //                            //
+            ////////////////////////////////
+            // Download mobileconfig
+            document.getElementById("download").addEventListener("click", () => {
+                // Validate name field
+                var name_error = false;
+                if (document.getElementById("name").value.trim() === "") {
+                    document.getElementById("name-error").innerText = "Name is required";
+                    name_error = true;
+                }
+
+                // Validate addresses field
+                var addresses_error = false;
+                const ip_regex =
+                    /((^\s*((([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]))\s*$)|(^\s*((([0-9A-Fa-f]{1,4}:){7}([0-9A-Fa-f]{1,4}|:))|(([0-9A-Fa-f]{1,4}:){6}(:[0-9A-Fa-f]{1,4}|((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){5}(((:[0-9A-Fa-f]{1,4}){1,2})|:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3})|:))|(([0-9A-Fa-f]{1,4}:){4}(((:[0-9A-Fa-f]{1,4}){1,3})|((:[0-9A-Fa-f]{1,4})?:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){3}(((:[0-9A-Fa-f]{1,4}){1,4})|((:[0-9A-Fa-f]{1,4}){0,2}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){2}(((:[0-9A-Fa-f]{1,4}){1,5})|((:[0-9A-Fa-f]{1,4}){0,3}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(([0-9A-Fa-f]{1,4}:){1}(((:[0-9A-Fa-f]{1,4}){1,6})|((:[0-9A-Fa-f]{1,4}){0,4}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:))|(:(((:[0-9A-Fa-f]{1,4}){1,7})|((:[0-9A-Fa-f]{1,4}){0,5}:((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)(\.(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)){3}))|:)))(%.+)?\s*$))/;
+                if (document.getElementById("addresses").value.trim() === "") {
+                    document.getElementById("addresses-error").innerText = "Addresses are required";
+                    addresses_error = true;
+                } else if (
+                    !document
+                        .getElementById("addresses")
+                        .value.trim()
+                        .split("\n")
+                        .map((address) => address.trim())
+                        .every((address) => ip_regex.test(address))
+                ) {
+                    document.getElementById("addresses-error").innerText =
+                        "All addresses must be valid IPv4 or IPv6 addresses";
+                    addresses_error = true;
+                }
+
+                // Validate template field
+                var template_error = false;
+                const domain_regex = /(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9][a-z0-9-]{0,61}[a-z0-9]/;
+                if (document.getElementById("doh").checked == true) {
+                    if (document.getElementById("template").value.trim() === "") {
+                        document.getElementById("template-error").innerText = "URL is required";
+                        template_error = true;
+                    } else {
+                        try {
+                            url = new URL(document.getElementById("template").value);
+
+                            if (url.protocol !== "https:") {
+                                document.getElementById("template-error").innerText = "URL must be HTTPS";
+                                template_error = true;
+                            }
+                        } catch {
+                            document.getElementById("template-error").innerText = "Invalid URL";
+                            template_error = true;
+                        }
+                    }
+                } else {
+                    if (document.getElementById("template").value.trim() === "") {
+                        document.getElementById("template-error").innerText = "Domain is required";
+                        template_error = true;
+                    } else if (!domain_regex.test(document.getElementById("template").value)) {
+                        document.getElementById("template-error").innerText = "Invalid Domain";
+                        template_error = true;
+                    }
+                }
+
+                // Clear error messages if no error
+                if (!name_error) {
+                    document.getElementById("name-error").innerText = "";
+                }
+                if (!addresses_error) {
+                    document.getElementById("addresses-error").innerText = "";
+                }
+                if (!template_error) {
+                    document.getElementById("template-error").innerText = "";
+                }
+
+                // If any errors do not continue
+                if (name_error || addresses_error || template_error) {
+                    return;
+                }
+
+                // Generate mobileconfig
+                const content = generate_mobileconfig(
+                    document.getElementById("name").value.trim(),
+                    document
+                        .getElementById("addresses")
+                        .value.trim()
+                        .split("\n")
+                        .map((address) => address.trim()),
+                    document.getElementById("template").value.trim(),
+                    document.getElementById("doh").checked == true ? "doh" : "dot"
+                );
+
+                // Download mobileconfig
+                const blob = new Blob([content], { type: "application/x-apple-aspen-config" });
+                const link = document.createElement("a");
+                link.download =
+                    document.getElementById("name").value.toLowerCase().replace(" ", "-") +
+                    "-" +
+                    (document.getElementById("doh").checked == true ? "https" : "tls") +
+                    "-dns.mobileconfig";
+                link.href = URL.createObjectURL(blob);
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            });
+        </script>
+    </body>
+</html>
